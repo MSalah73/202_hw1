@@ -1,9 +1,43 @@
+///////////////////////////////////////////////////////////////////////////////
+//Zack Salah
+//CS Maze Game 
+//Homework: # 1
+//Programming Systems #202
+///////////////////////////////////////////////////////////////////////////////
+//This file contains the implentaion of the cs maze game class.  It contains
+//every function. The comments in the file will descripe the functionalty step
+//by step to ensure the grader's understanding of all the functions.
+//
+//As I immplented all of the classes, I have returned and added and fixed some
+//of the functions in this file. Becouse most of the function have functions from
+//outside of the class. I encourge opening all the files to ensure all of the 
+//connections that has been made.
+//
+//Algorithms
+//
+//There is no algorithm invloved in this class. its just a interface that mangers
+//all the functions needed and classes and sumklate them in basic text based game 
+//for any yourr to enjoy playing. setting up the interface was easy but took a long
+//time to ensure that every possible out put is tested and works fully with no error
+//illgal use of code. The program is memory leek free.
+///////////////////////////////////////////////////////////////////////////////
+//Hierarchy Connections:
+//CS Maze Game -HAS A-> CS Maze
+//CS Maze Game -HAS A-> Player
+///////////////////////////////////////////////////////////////////////////////
+
+
 #include "cs_maze_game.h"
 using namespace std;
-
+//Defualt constructor
 cs_maze_game::cs_maze_game():players_table(NULL), table_size(0)
 {
 }
+//Copy comstructor 
+//step 1: allocate new maze with passed in maze object 
+//step 2: copy table size from maze object 
+//step 3: if table exixts - create player table 
+//setp 4: coply all passed objects table to current table
 cs_maze_game::cs_maze_game(const cs_maze_game & to_copy):players_table(NULL), table_size(0)
 {
     maze = new cs_maze(*to_copy.maze);
@@ -15,18 +49,21 @@ cs_maze_game::cs_maze_game(const cs_maze_game & to_copy):players_table(NULL), ta
             players_table[i].copy_members(to_copy.players_table[i]);
     }
 }
+//step 1: create nesisary tools and object for the game
+//step 2: randomize the turn
+//step 3: begin game 
 void cs_maze_game::start()
 {
     bool quit = false;
     cout<<"Welcone to the randomized maze game. The rules is to "
         <<"reach the winnning check point before the other team does\n"
-        <<"\33[0;31mDISCLAIMER: You can uncomment out maze->display_map() - file cs_maze_game line 29, if you are having a hard time findng the winning checkpoint \33[0m\n\n";
+        <<"\33[0;31mDISCLAIMER: You can uncomment out maze->display_map() - file cs_maze_game line 67, if you are having a hard time findng the winning checkpoint \33[0m\n\n";
     set_tables();
     int Turn = (random() % table_size);
     set_teams();
     for(int i = 0; i < table_size; ++i)
         maze->start(players_table[i]);
-    //maze->display_map();
+   // maze->display_map();
     do
     {
         Turn %= table_size;
@@ -44,6 +81,10 @@ void cs_maze_game::start()
         ++Turn;
     }while(!quit ^ maze->check_winner());
 }
+//setp 1: ask your for number of player
+//step 2: set it all objects that needs it 
+//setp 3: ask the user all the player names 
+//setp 4: set their team size to half of the give number of players
 void cs_maze_game::set_tables()
 {
     char temp[100] = {0};
@@ -66,6 +107,8 @@ void cs_maze_game::set_tables()
         players_table[i].change_name(temp);
     }
 }
+//step 1: splitting the size of the table
+//step 1: set each player to its team
 void cs_maze_game::set_teams()
 {
     int j, tsize;
@@ -86,6 +129,10 @@ void cs_maze_game::set_teams()
                 players_table[i].add_player(players_table[j]);
     }
 }
+//step 1: dipslay display menu 
+//step 3: dpending on the choice displayed on the menu indicates the right funtion will be called 
+//step 2: check if choice is in range 
+//step 3: if 4 than quit program
 bool cs_maze_game::menu(int to_play)
 {
     int choice = 0; 
@@ -110,6 +157,9 @@ bool cs_maze_game::menu(int to_play)
         return true;
     return false;
 }
+//step 1: dipslay display menu 
+//step 2: check if choice is in range 
+//step 3: dpending on the choiceit will display as the menu indicates
 int cs_maze_game::display_options(int Turn)
 {
     int choice = 0;
@@ -150,6 +200,10 @@ int cs_maze_game::display_options(int Turn)
         return 4;
     return 0;
 }
+//step 1: dipslay menu and possible paths
+//step 2: check if choice exists or check if it is zero 
+//step 3: if zero go back to main menu
+//step 1: else move player to choosen location 
 bool cs_maze_game::turn(player & to_play)
 {
     int choice = 0;
@@ -168,6 +222,10 @@ bool cs_maze_game::turn(player & to_play)
     maze->move_player(to_play, choice);
     return 1;
 }
+//step 1: display reward menu 
+//step 2: check if reward exists or check if choice is zero 
+//step 3: if zero go back to main menu
+//step 4: if exixts - use reward and call activate reward funtion
 bool cs_maze_game::reward_menu(int Turn)
 {
     int choice = 0;
@@ -184,6 +242,11 @@ bool cs_maze_game::reward_menu(int Turn)
     activate_reward((choice-1), Turn);
     return false;
 }
+//step 1: if use is zero - than randomly paralyze enemy player 
+//step 2: if use is 1 - than ramdomly steals from enemy items 
+//step 3: if use is 2 - than use double turn 
+//step 4; if use is 3 - than player will randomliy move to a friend's location 
+//step 5; if use is 4 - than player will randomliy move to a enemy's location 
 void cs_maze_game::activate_reward(const int use, int Turn)
 {
     if(!use)
@@ -232,10 +295,17 @@ void cs_maze_game::activate_reward(const int use, int Turn)
         }
     }
     else if(use == 3)
+    {
         maze->move_to_friend(players_table[Turn]);
+        players_table[Turn].display_location();
+    }
     else
+    {
         maze->move_to_enemy(players_table[Turn]);
+        players_table[Turn].display_location();
+    }
 }
+//step 1: delete player's table and maze 
 cs_maze_game::~cs_maze_game()
 {
     delete [] players_table;

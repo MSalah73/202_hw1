@@ -1,11 +1,36 @@
-///////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+//Zack Salah
+//CS Maze Game
+//Homework # 1
+//Programming Systems #202
+///////////////////////////////////////////////////////////////////////////////////////
+//This file manges name, members, and player classes. Each class has a
+//Porpuse and they have their own "Job" in the program. The OOP design 
+//sumulates the connections from paper to actual program. 
 //
+//Descriptions:
 //
+//Name Class:
+//The name class is the core of main hub base class of the program. It 
+//manages the name of players, chickpoints, and rewards. The class acn be 
+//considered as the main core of the program as it is the base class for mainly
+//every class.
 //
+//Members Class
+//The member class is a holder of players. Classes like player and a vertex/chickpoint 
+//uses this class to store players. In the player class, the members class act as a
+//friend holder to store other players in his or her team. While the vertex/checkpoint 
+//class store the players that move to it. This class has a substantial imprortance in 
+//this OOP program. Without it the game would be functinal.
 //
-//
-//
-//////////////////////////////////////
+//Player Class
+//The player class is also improtant. The class it slef is basicliy a manger of rewards,
+//members,and a location. the class sumulate a person in a team that hold rewards and a 
+//loaction. The game would not be playable with out this class. 
+/////////////////////////////////////////////////////////////////////////////////////////
+//Hierarchy Connections:
+//Player -IS A-> Member -IS A-> Name
+/////////////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <cstring>
 #include <fstream>
@@ -14,7 +39,6 @@
 #include <algorithm>
 #ifndef NAME_LOCATION_H
 #define NAME_LOCATION_H
-//Try to replace setter fuction drived classes should takle care of compare and stuff. name is fin tho
 class name
 {
     public:
@@ -45,10 +69,10 @@ class members: public name// "FRIENDS" class
         void create_table(const int to_size);
         void copy_members(const members & to_copy);
         void remove_player(const class player & to_remove);
-        void display_players() const; //merge displays
+        void display_players() const; 
         void add_player(class player & to_add);
-        void display_players_locations() const;// After vertex - player ///change
-        bool isMember(const class player & to_comp) const;//do as a virtual display
+        void display_players_locations() const;
+        bool isMember(const class player & to_comp) const;
         bool isEmpty() const;
         bool isFriend(const class player & to_compare)const;
 
