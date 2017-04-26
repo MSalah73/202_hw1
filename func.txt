@@ -1,0 +1,32 @@
+//This does this
+3|0
+2|2-1-0
+1|4-3-2-1
+0|6-5-4-3
+void cs_maze::generate_paths(int * paths, int blocks)
+{
+    //----setting three directions paths----
+    int III_paths = random() % 4,
+        II_paths = 0, num_vertex = 1;
+
+    //----setting two directions paths----
+    if(!III_paths)
+        II_paths = (random() % 4) + 3;
+    else if(III_paths == 2)
+        II_paths = random() % 3;
+    else if(III_paths == 1)
+        II_paths = (random() % 4) + 1;
+
+    //----setting one direction path----
+    for(int i = 0; i < (III_paths); ++i)
+        num_vertex += 3;
+    for(int i = 0; i < (II_paths); ++i)
+        num_vertex += 2;
+    paths[0] = size - num_vertex;
+    paths[1] = II_paths;
+    paths[2] = III_paths;
+
+    //----setting the number of blocks---
+    blocks = (num_vertex - (III_paths + II_paths));
+}
+

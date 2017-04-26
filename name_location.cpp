@@ -12,7 +12,7 @@ using namespace std;
 name::name(): _name(NULL)
 {
 }
-name::name(char * to_add): _name(NULL)
+name::name(const char * to_add): _name(NULL)
 {
     change_name(to_add);
 }
@@ -20,7 +20,7 @@ name::name(const name & to_copy): _name(NULL)
 {
     set_name(to_copy);
 }
-void name::change_name(char * to_change)
+void name::change_name(const char * to_change)
 {
     if(!to_change)
         return;
@@ -51,91 +51,188 @@ name::~name()
     delete [] _name;
     _name = NULL;
 }
-//team CLASS
-team::team(): teammates(NULL), team_size(0)
+//members CLASS
+members::members():player_table(NULL), size(0)
 {
 }
-team::team(char * to_add): name(to_add), teammates(NULL), team_size(0)
+members::members(const char * to_add): name(to_add), player_table(NULL), size(0)
 {
 }
-team::team(char * to_add, int num_of_players): name(to_add), teammates(NULL), team_size(0)
+members::members(const char * to_add, const int to_size): name(to_add), player_table(NULL), size(0)
 {
-    create_array(num_of_players);
+    create_table(to_size);
 }
-team::team(const name & to_copy, int num_of_players): name(to_copy), teammates(NULL), team_size(0)
+members::members(const name & to_copy, const int to_size): name(to_copy), player_table(NULL), size(0)
 {
-    create_array(num_of_players);
+    create_table(to_size);
 }
-team::team(const team & to_copy): name(to_copy), teammates(NULL), team_size(0)
+members::members(const members & to_copy): name(to_copy), player_table(NULL), size(0)
 {
-    create_array(to_copy.team_size);
-    for(int i = 0; i < team_size; ++i)
-        teammates[i] = to_copy.teammates[i];
+    copy_members(to_copy);
 }
-void team::create_array(int size)
+void members::copy_members(const members & to_copy)
 {
-    team_size = size;
-    teammates = new player * [size];
+    create_table(to_copy.size);
     for(int i = 0; i < size; ++i)
-        teammates[i] = NULL;
+        player_table[i] = to_copy.player_table[i];
 }
-void team::display_team() const
+void members::create_table(const int to_size)
 {
-    cout<<"Team members:\n";
-    for(int i = 0; i < team_size; ++i)
-        if(teammates[i])
-            teammates[i]->display();
+    size = to_size;
+    player_table = new player * [size];
+    for(int i = 0; i < size; ++i)
+        player_table[i] = NULL;
 }
-void team::add_player(class player & to_add)
+void members::display_players() const
 {
-    bool added = isTeammate(to_add);
-    for(int i = 0; i < team_size && !added; ++i)
-        if(!teammates[i])
+
+    cout<<"\33[0;31m-----friend's name-----\33[0m\n";
+    for(int i = 0; i < size; ++i)
+        if(player_table[i])
+            player_table[i]->display();
+}
+void members::add_player(class player & to_add)
+{
+    bool added = isMember(to_add);
+    for(int i = 0; i < size && !added; ++i)
+        if(!player_table[i])
         {
-            teammates[i] = &to_add;
+            player_table[i] = &to_add;
             added = true;
         }
 }
-void team::remove_teammate(const class player & to_remove)
+void members::remove_player(const class player & to_remove)
 {
-    if(!isTeammate(to_remove))
+    if(!isMember(to_remove))
         return;
     bool removed = false;
-    for(int i = 0; i < team_size && !removed; ++i)
-        if(teammates[i] && teammates[i]->compare(to_remove))
+    for(int i = 0; i < size && !removed; ++i)
+        if(player_table[i] && player_table[i]->compare(to_remove))
         {
-            teammates[i] = NULL;
+            player_table[i] = NULL;
             removed = true;
         }
 }
-void team::display_team_locations() const
+void members::display_players_locations() const
 {
-    //after checkpoint - player
+    cout<<"\33[0;31m-----Player's name-----\33[0m\n";
+    for(int i = 0; i < size; ++i)
+        if(player_table[i])
+        {
+            player_table[i]->display();
+            player_table[i]->display_location();
+            cout<<"\33[0;31m-----------------------\33[0m\n";
+        }
 }
-bool team::isTeammate(const class player & to_comp) const
+bool members::isMember(const class player & to_comp) const
 {
     bool found = false;
-    for(int i = 0; i < team_size && !found; ++i)
+    for(int i = 0; i < size && !found; ++i)
     {
-        if(!teammates[i])
+        if(!player_table[i])
             continue;
         else 
-            found = teammates[i] == &to_comp;
+            found = player_table[i] == &to_comp;
     }
     return found;
 }
-team::~team()
+bool members::isEmpty() const
 {
-    delete [] teammates;
-    teammates = NULL;
+    bool found = true;
+    for(int i = 0; i < size && found; ++i)
+        if(player_table[i])
+            found = false;
+    return found;
+}
+bool members::isFriend(const class player & to_compare)const
+{
+    bool found = false;
+    for(int i = 0; i < size && !found; ++i)
+        if(player_table[i])
+            if(player_table[i]->isMember(to_compare))
+                found = true;
+    return found;
+}
+members::~members()
+{
+    delete [] player_table;
+    player_table = NULL;
 }
 //Player class
-player::player()
+player::player():location(NULL), paralyze(false)
 {
+    reward_inventory = new reward;
 }
-player::player( char * to_add): team(to_add)
+player::player(char * to_add, const int team_size): members(to_add, team_size), location(NULL),paralyze(false)
 {
+    reward_inventory = new reward;
+}
+player::player(const player & to_copy): location(NULL)
+{
+    paralyze = to_copy.paralyze;
+    reward_inventory = new reward(*to_copy.reward_inventory);
+    location = to_copy.location;
+}
+bool player::isParalyzed()
+{
+    if(paralyze)
+        return true;
+    return false;
+}
+void player::change_effect()
+{
+    paralyze = !paralyze;
+}
+void player::add_reward(const int to_activate)
+{
+    reward_inventory->activate_reward(to_activate);
+}
+bool player::use_reward(const int use)
+{
+    return reward_inventory->use_reward(use);
+}
+void player::update_location(vertex_CP & to_update)
+{
+    location = &to_update;
+}
+void player::display_rewards() const
+{
+    reward_inventory->display();
+}
+void player::display_info() const
+{
+    cout<<"\n\33[0;31m-----Player's infromation-----\33[0m\n";
+    display();
+    cout<<"\33[0;31m-----Rewards inventory-----\33[0m\n";
+    reward_inventory->display();
+    if(location)
+    {
+        display_location();
+        cout<<"\n\33[0;31m-----Possible paths to take-----\33[0m\n";
+        location->display_connections();
+    }
+    cout<<"\33[0;31m-----Friends locations-----\33[0m\n";
+    display_players_locations();
+}
+void player::display_location() const
+{
+    if(!location)
+        return;
+    cout<<"\33[0;31m-----Current Location-----\33[0m\n";
+    location->display();
+}
+void player::display_paths() const
+{
+    location->display_connections();
+}
+bool player::isValid_path(int valid)const 
+{
+    if(!location)
+        return true;
+    return location->isValid_path(valid);
 }
 player::~player()
 {
+    delete reward_inventory;
+    location = NULL;
 }
