@@ -1,13 +1,14 @@
-Maze Game
-By Mohammed (Zack) Salah
-Technologies
+# Maze Game
+## By Mohammed (Zack) Salah
+# Technologies
 
    * **Data Structures**: *Red-Black Tree, Doubly Linked List and Linear Linked List*
    * **Concepts**: *OOP*
 
-Installation
+# Installation
 
-Install Application frequency manager by cloning the repository in command line and compile it with g++ GNU compiler.
-License
+Install *Maze Game* by cloning the repository in command line and compile it with g++ GNU compiler.
 
-Copyright (c) 2017 Mohammed (Zack) Salah
+# License
+
+Copyright (c) 2017 **Mohammed (Zack) Salah**
