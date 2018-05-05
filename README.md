@@ -2,7 +2,7 @@ Maze Game
 By Mohammed (Zack) Salah
 Technologies
 
-   * **Data Structures **: Red-Black Tree and Linear Linked List*
+   * **Data Structures**: Red-Black Tree and Linear Linked List*
    * **Concepts**: OOP, Operator Overloading, Abstract Base Class, Virtual Functions, and RTTI*
 
 Installation
