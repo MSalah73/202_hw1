@@ -2,8 +2,8 @@ Maze Game
 By Mohammed (Zack) Salah
 Technologies
 
-   * **Data Structures**: Red-Black Tree, Doubly Linked List and Linear Linked List*
-   * **Concepts**: OOP*
+   * **Data Structures**: *Red-Black Tree, Doubly Linked List and Linear Linked List*
+   * **Concepts**: *OOP*
 
 Installation
 
